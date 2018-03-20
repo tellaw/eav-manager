@@ -114,15 +114,18 @@ class ImportCsvCommand extends ContainerAwareCommand
         $progress = new ProgressBar($output, $csv->getLineCount());
         $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
 
-        $currentPosition = $this->importContext->getCurrentPosition();
-        if (is_array($currentPosition) && array_key_exists('seek', $currentPosition) &&
-            array_key_exists('progress', $currentPosition)
-        ) {
-            $csv->seek($currentPosition['seek']);
-            $progress->setProgress($currentPosition['progress']);
-        }
+//        $currentPosition = $this->importContext->getCurrentPosition();
+//        if (is_array($currentPosition) && array_key_exists('seek', $currentPosition) &&
+//            array_key_exists('progress', $currentPosition)
+//        ) {
+//            $csv->seek($currentPosition['seek']);
+//            $progress->setProgress($currentPosition['progress']);
+//        }
 
         $line = 0;
+        $csv->seek(0);
+        $progress->setProgress(0);
+
         while (!$csv->isEndOfFile()) {
             $line++;
             $this->readLine($csv, $progress);
