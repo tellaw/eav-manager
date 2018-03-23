@@ -77,7 +77,10 @@ class ImportCsvCommand extends ContainerAwareCommand
             throw new \LogicException('File already processed but import context was never closed properly ?');
         }
         $this->importContext->setBatchCount($this->importConfig->getOption('batch_count', 30));
-
+        $this->importContext->setCurrentPosition([
+            'seek' => 0,
+            'progress' => 0,
+        ]);
         $this->family = $this->importConfig->getFamily();
         if (!$this->family->getAttributeAsIdentifier()) {
             $m = "Cannot import data for family {$this->family->getCode()} without an attributeAsIdentifier";
@@ -114,17 +117,15 @@ class ImportCsvCommand extends ContainerAwareCommand
         $progress = new ProgressBar($output, $csv->getLineCount());
         $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
 
-//        $currentPosition = $this->importContext->getCurrentPosition();
-//        if (is_array($currentPosition) && array_key_exists('seek', $currentPosition) &&
-//            array_key_exists('progress', $currentPosition)
-//        ) {
-//            $csv->seek($currentPosition['seek']);
-//            $progress->setProgress($currentPosition['progress']);
-//        }
+        $currentPosition = $this->importContext->getCurrentPosition();
+        if (is_array($currentPosition) && array_key_exists('seek', $currentPosition) &&
+            array_key_exists('progress', $currentPosition)
+        ) {
+            $csv->seek($currentPosition['seek']);
+            $progress->setProgress($currentPosition['progress']);
+        }
 
         $line = 0;
-        $csv->seek(1);
-        $progress->setProgress(0);
 
         while (!$csv->isEndOfFile()) {
             $line++;
