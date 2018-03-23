@@ -123,7 +123,7 @@ class ImportCsvCommand extends ContainerAwareCommand
 //        }
 
         $line = 0;
-        $csv->seek(0);
+        $csv->seek(1);
         $progress->setProgress(0);
 
         while (!$csv->isEndOfFile()) {
