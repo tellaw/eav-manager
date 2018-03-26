@@ -77,10 +77,7 @@ class ImportCsvCommand extends ContainerAwareCommand
             throw new \LogicException('File already processed but import context was never closed properly ?');
         }
         $this->importContext->setBatchCount($this->importConfig->getOption('batch_count', 30));
-        $this->importContext->setCurrentPosition([
-            'seek' => 0,
-            'progress' => 0,
-        ]);
+
         $this->family = $this->importConfig->getFamily();
         if (!$this->family->getAttributeAsIdentifier()) {
             $m = "Cannot import data for family {$this->family->getCode()} without an attributeAsIdentifier";
